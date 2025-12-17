@@ -13,6 +13,10 @@ st.write(
 cnx = st.connection("snowflake")
 session = cnx.session()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"))
+pd_df = my_dataframe.to_pandas()
+st.dataframe(pd_df)
+st.stop()
+
 
 name_on_order = st.text_input("Name on Smoothie:")
 st.write(f"The name on your smoothie will be {name_on_order}")
@@ -31,7 +35,6 @@ if ingredients_list:
       smoothiefroot_response = requests.get(f"https://my.smoothiefroot.com/api/fruit/{fruit}")
       if smoothiefroot_response.ok:
         sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
-  
 
     my_insert_stmt = f""" insert into smoothies.public.orders(ingredients, name_on_order)
             values ('{ingredients_string}','{name_on_order}')"""
